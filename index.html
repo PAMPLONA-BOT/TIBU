@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#00796b"/>
+  <title>Aplicación de Reporte Diario</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      flex-direction: column;
+      color: #333;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 600px;
+      background-color: #fff;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      margin: 0 auto 60px auto;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .container:hover {
+      transform: scale(1.02);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 12px 24px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #45a049;
+      transform: translateY(-3px);
+    }
+
+    .btn-regresar {
+      background-color: #FF6347;
+      width: 50%;
+      margin: 10px auto;
+    }
+
+    .btn-regresar:hover {
+      background-color: #FF4500;
+      transform: translateY(-3px);
+    }
+
+    h1, h2 {
+      margin-bottom: 20px;
+      font-size: 28px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .logo {
+      width: 120px;
+      height: auto;
+      margin-bottom: 20px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    label {
+      font-weight: bold;
+      color: #444;
+      margin-bottom: 6px;
+      text-align: left;
+      display: block;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+      width: 100%;
+    }
+
+    .form-group select,
+    .form-group input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 4px;
+      border: 2px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    #cicloSeccion {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    #cicloSeccion .form-group {
+      flex: 1;
+    }
+
+    .btn-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 5px;
+      margin-bottom: 20px;
+    }
+
+    .btn-row .btn {
+      width: 48%;
+    }
+
+    #vistaReporte h2 {
+      font-size: 30px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #2E8B57;
+      text-align: center;
+    }
+
+    .footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 14px;
+      color: #888;
+      background-color: #fff;
+      padding: 10px 0;
+      box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .footer p {
+      margin: 0;
+    }
+
+    #whatsappLink {
+      text-decoration: none;
+      text-align: center;
+    }
+    
+    .card pre {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      overflow-x: auto;
+      font-size: 15px;
+      color: #444;
+      background-color: #f9f9f9;
+      padding: 10px;
+      border-radius: 6px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+<!-- Vista principal -->
+<div id="interfazPrincipal" style="display: block;">
+  <div class="container" id="inicio">
+    <img alt="Logo de la página" class="logo" src="Logo.png"/>
+    <h1>REGIONAL TIBU - TIBU</h1>
+    <button class="btn" onclick="mostrarFormulario()">REPORTE DIARIO</button>
+  </div>
+  
+  <!-- Vista de formulario -->
+  <div class="container hidden" id="vistaReporte">
+    <h2>Reporte Diario</h2>
+    <div class="form-group">
+      <label for="operario">Operario:</label>
+      <select id="operario"></select>
+    </div>
+    <div id="cicloSeccion">
+      <div class="form-group">
+        <label for="ciclo">Ciclo:</label>
+        <select id="ciclo"></select>
+      </div>
+      <div class="form-group">
+        <label for="seccion">Sección:</label>
+        <select id="seccion"></select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="via">📝 Seleccione tipo de campo:</label>
+      <select onchange="document.querySelector('label[for=via]').textContent = this.value + ':';">
+        <option value="🛣️ Vía">🛣️ Vía</option>
+        <option value="👨🏻 Primer usuario">👨🏻 Primer usuario</option>
+        <option value="🏙 En">🏙 En</option>
+      </select>
+      <input id="via" placeholder="Ingrese dato segun reporte, la vía de traslado, primer usuario o lugar de finalizacion" type="text"/>
+    </div>
+    <div class="btn-row">
+      <button class="btn" onclick="enviarReporte('salida')">TRASLADO SALIDA</button>
+      <button class="btn" onclick="enviarReporte('regreso')">TRASLADO REGRESO</button>
+    </div>
+    <div class="btn-row">
+      <button class="btn" onclick="enviarReporte('inicio')">INICIO DE LABOR</button>
+      <button class="btn" onclick="enviarReporte('fin')">FIN DE LABOR</button>
+    </div>
+    <button class="btn btn-regresar" onclick="regresarAPrincipal()">INICIO</button>
+    <a class="btn hidden" href="#" id="whatsappLink" target="_blank">ENVIAR AL GRUPO DE WHATSAPP</a>
+    <button class="btn" onclick="copiarReporte()">📋 PEGAR REPORTE</button>
+  </div>
+  
+  <div class="footer">
+    <p>Versión: 001</p>
+    <p id="fechaHora"></p>
+  </div>
+</div>
+
+<script>
+  // Datos internos
+  const data = {
+    operarios: ["CARDONA AREVALO IDULFO", "JULIO HERNANDEZ ALEXANDER", "ORTIZ PEÑARANDA ELKLIN", "ORTIZ MENDOZA LUIS ALBERTO", "PEREZ ORELLANOS JABES", "GELVEZ SANCHEZ EDUARD", "TRUJILLO CONTRERAS EUDIN GIOVANNI"],
+    ciclos: ["474", "401", "402", "404", "434", "435", "436", "490", "SCR"],
+    seccionesPorCiclo: {
+      "434": ["752", "867", "869", "739", "865", "746", "749", "750", "868", "870", "873", "753", "872", "860", "866", "871", "862", "863", "743", "861", "864"],
+      "435": ["069", "070", "028", "029", "030", "711", "713", "024", "025", "050", "023", "051", "708", "026", "027", "706", "710", "712", "745", "747", "031"],
+      "436": ["018", "019", "020", "014", "015", "016", "005", "006", "007", "004", "008", "009", "010", "011", "012", "013", "751", "001", "002", "003", "017", "021", "022"],
+      "409": ["781", "771", "774", "787", "785", "790", "772", "780", "786", "773", "775", "782", "788", "776", "778", "783", "789", "779", "777", "792", "791"],
+      "474": ["762", "763", "768", "769", "757", "759", "764", "765", "760", "761", "755", "756", "766", "767", "754", "758"],
+      "401": ["700", "701", "709", "707", "702", "703", "705", "704"],
+      "404": ["740", "742", "741", "744", "748"],
+      "490": ["13", "12"],
+      "SCR": ["SUSPENSION", "RECONEXION", "DESVIACION", "MIXTA", "OTROS"],
+      "402": ["402", "402", "402", "402", "402", "402", "402", "402", "402", "402", "402", "402", "402", "402"],
+          }
+  };
+
+  // Variable global para guardar el mensaje
+  let ultimoMensajeGenerado = "";
+
+  // Usamos los datos embebidos directamente
+  window.onload = function () {
+    mostrarFechaHora();
+
+    // Llenar selects al cargar
+    llenarSelect("operario", data.operarios);
+    llenarSelect("ciclo", data.ciclos);
+
+    document.getElementById("ciclo").addEventListener("change", function () {
+      const cicloSeleccionado = this.value;
+      const secciones = data.seccionesPorCiclo[cicloSeleccionado] || [];
+      llenarSelect("seccion", secciones);
+    });
+  };
+
+  function llenarSelect(id, valores) {
+    const select = document.getElementById(id);
+    select.innerHTML = '<option value="">Seleccione</option>';
+    valores.forEach(valor => {
+      const option = document.createElement("option");
+      option.value = valor;
+      option.textContent = valor;
+      select.appendChild(option);
+    });
+  }
+
+  function mostrarFechaHora() {
+    const now = new Date();
+    const fecha = now.toLocaleDateString();
+    const hora = now.toLocaleTimeString();
+    document.getElementById('fechaHora').innerHTML = `Fecha y Hora: ${fecha} ${hora}`;
+  }
+
+  function mostrarFormulario() {
+    document.getElementById('inicio').classList.add('hidden');
+    document.getElementById('vistaReporte').classList.remove('hidden');
+  }
+
+  function regresarAPrincipal() {
+    document.getElementById('vistaReporte').classList.add('hidden');
+    document.getElementById('inicio').classList.remove('hidden');
+  }
+
+  function enviarReporte(tipo) {
+    const operario = document.getElementById("operario").value;
+    const ciclo = document.getElementById("ciclo").value;
+    const seccion = document.getElementById("seccion").value;
+    const via = document.getElementById("via").value.trim();
+
+    if ((tipo === "salida" || tipo === "regreso") && (!operario || !ciclo || !seccion || !via)) {
+      alert("Por favor complete los campos: Operario, Ciclo, Sección y Vía.");
+      return;
+    }
+
+    if ((tipo === "inicio" || tipo === "fin") && (!operario || !via)) {
+      alert("Por favor complete los campos: Operario y Vía.");
+      return;
+    }
+
+    if (!navigator.geolocation) {
+      alert("Tu navegador no permite geolocalización.");
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(pos => {
+      const mapaCod = {
+        "0": "F", "1": "G", "2": "C", "3": "I", "4": "V",
+        "5": "A", "6": "B", "7": "H", "8": "Z", "9": "J",
+        ".": "K", ",": "L", "-": "M"
+      };
+      const codificarCoord = c => [...c].map(l => mapaCod[l] || '').join('');
+      const lat = pos.coords.latitude.toFixed(7);
+      const lon = pos.coords.longitude.toFixed(7);
+      const codificado = codificarCoord(lat + "," + lon);
+
+      const fecha = new Date().toLocaleDateString();
+      const hora = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      let titulo = "";
+      if (tipo === "salida") titulo = "🏍🔀 Traslado de salida";
+      if (tipo === "regreso") titulo = "🏍↩️ Traslado de regreso";
+      if (tipo === "inicio") titulo = "🧾 Inicio de labor";
+      if (tipo === "fin") titulo = "🪫 Fin de labor";
+
+      let mensaje = `${titulo}
+🗓 Fecha: ${fecha} ${codificado.slice(0, Math.floor(codificado.length / 2))}
+⏰ Hora: ${hora} ${codificado.slice(Math.floor(codificado.length / 2))}
+👷‍♂️ Operario: ${operario}`;
+      if (tipo === "salida" || tipo === "regreso") {
+        mensaje += `
+🔁 Ciclo: ${ciclo}
+📍 Sección: ${seccion}
+🛣️ Vía: ${via}`;
+      } else {
+        mensaje += `
+${document.querySelector("label[for=via]").textContent.replace(":", "")}: ${via}`;
+      }
+
+      ultimoMensajeGenerado = mensaje;
+      const url = "https://wa.me/?text=" + encodeURIComponent(mensaje);
+      window.open(url, "_blank");
+
+      document.getElementById("via").value = "";
+    }, () => {
+      alert("Favor activar GPS y DATOS para poder pasar a la aplicacion de WhatsApp");
+    });
+  }
+
+  // Función para copiar al portapapeles
+  function copiarReporte() {
+    if (!ultimoMensajeGenerado) {
+      alert("No hay reporte disponible para copiar. Por favor genera uno primero.");
+      return;
+    }
+
+    navigator.clipboard.writeText(ultimoMensajeGenerado).then(() => {
+      alert("Reporte copiado al portapapeles. Puedes pegarlo manualmente en WhatsApp.");
+    }).catch(() => {
+      alert("No se pudo copiar el texto. Intenta manualmente.");
+    });
+  }
+</script>
+</body>
+</html>
